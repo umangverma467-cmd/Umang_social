@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block title %}Edit profile — UMANG SOCIAL{% endblock %}
+{% block content %}
+<div class="auth-card edit-card"><div class="eyebrow">MAKE IT YOURS</div><h2>Edit your profile</h2><form method="post" enctype="multipart/form-data" class="form">{{ form.hidden_tag() }}<label>{{ form.bio.label }}{{ form.bio(class_="input", rows="4", placeholder="A little about you…") }}</label>{% for e in form.bio.errors %}<small class="error">{{ e }}</small>{% endfor %}<label>Profile photo<input class="input file-input" type="file" name="avatar" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp"></label><p class="tiny-note">Maximum image size: 5 MB. PNG, JPG and WEBP only.</p>{{ form.submit(class_="btn btn-full") }}</form></div>
+{% endblock %}

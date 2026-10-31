@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}UMANG SOCIAL — Your people, your world{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <div class="eyebrow"><span class="pulse"></span> A NEW WAY TO CONNECT</div>
+    <h1>Your people.<br><span>Your world.</span></h1>
+    <p class="hero-sub">A thoughtful space to share moments, discover ideas and stay close to the people who matter.</p>
+    <div class="hero-buttons"><a class="btn" href="{{ url_for('register') }}">Create your account <span>→</span></a><a class="btn btn-ghost" href="{{ url_for('login') }}">I already have an account</a></div>
+    <div class="hero-proof"><div class="avatar-stack"><i>U</i><i>S</i><i>A</i><i>+</i></div><span>Made for real connections</span></div>
+  </div>
+  <div class="hero-art">
+    <div class="glow"></div><div class="mock-window">
+      <div class="mock-top"><span></span><span></span><span></span><b>YOUR FEED</b></div>
+      <div class="mock-story-row"><i>U</i><i>M</i><i>A</i><i>R</i></div>
+      <div class="mock-post">
+        <div class="mock-user"><i>U</i><span><b>umang.verma</b><small>Just now · Public</small></span><strong>•••</strong></div>
+        <div class="mock-photo"><div class="sun"></div><div class="mountain m1"></div><div class="mountain m2"></div><div class="photo-caption">FIND YOUR<br>OWN PATH.</div></div>
+        <div class="mock-actions">♡　◯　↗ <span>▱</span></div><p><b>umang.verma</b> New beginnings, better connections. ✨</p>
+      </div>
+      <div class="floating-card"><span class="float-icon">✦</span><span><b>Stay connected</b><small>Share what inspires you</small></span></div>
+    </div>
+  </div>
+</section>
+<section class="feature-strip"><div><b>01</b><span>Share moments</span></div><div><b>02</b><span>Find your community</span></div><div><b>03</b><span>Keep it positive</span></div></section>
+{% endblock %}

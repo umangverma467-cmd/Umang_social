@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Chat with @{{ other.username }} — UMANG SOCIAL{% endblock %}
+{% block content %}
+<section style="max-width:820px;margin:0 auto">
+  <div class="section-heading"><div><div class="eyebrow">DIRECT MESSAGE</div><h1>Chat with @{{ other.username }}</h1></div><a class="pill-link" href="{{ url_for('messages') }}">← Messages</a></div>
+  <div class="card" style="padding:16px">
+    <div id="connection" class="muted" role="status" style="margin-bottom:12px">Connecting…</div>
+    <div id="chat-log" aria-live="polite" style="height: min(58vh,560px);overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:8px;background:var(--surface);border-radius:14px">
+      {% for msg in history %}
+      <div style="align-self:{{ 'flex-end' if msg.sender_id == current_user.id else 'flex-start' }};max-width:82%;background:{{ 'var(--accent)' if msg.sender_id == current_user.id else 'var(--card)' }};color:{{ '#fff' if msg.sender_id == current_user.id else 'inherit' }};padding:10px 13px;border-radius:14px;overflow-wrap:anywhere">
+        <div>{{ msg.body }}</div><small style="opacity:.7">{{ msg.created_at.strftime('%d %b %H:%M UTC') }}</small>
+      </div>
+      {% endfor %}
+    </div>
+    <form id="send-form" style="display:flex;gap:9px;margin-top:14px">
+      <input id="message-input" maxlength="2000" autocomplete="off" placeholder="Write a message…" required style="flex:1;min-width:0;padding:13px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:inherit">
+      <button class="btn btn-small" id="send-button" type="submit">Send</button>
+    </form>
+    <p id="chat-error" role="alert" style="color:#dc5555;margin:8px 0 0"></p>
+  </div>
+  <p class="muted" style="margin-top:12px">Keep personal details private. If someone makes you uncomfortable, leave the chat and block their account.</p>
+</section>
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<script>
+(() => {
+  const username = {{ other.username|tojson }};
+  const myUsername = {{ current_user.username|tojson }};
+  const socket = io();
+  const log = document.getElementById('chat-log');
+  const form = document.getElementById('send-form');
+  const input = document.getElementById('message-input');
+  const status = document.getElementById('connection');
+  const error = document.getElementById('chat-error');
+  function scrollDown(){ log.scrollTop = log.scrollHeight; }
+  function addMessage(m){
+    const wrap = document.createElement('div');
+    const mine = m.sender === myUsername;
+    wrap.style.cssText = `align-self:${mine ? 'flex-end' : 'flex-start'};max-width:82%;background:${mine ? 'var(--accent)' : 'var(--card)'};color:${mine ? '#fff' : 'inherit'};padding:10px 13px;border-radius:14px;overflow-wrap:anywhere`;
+    const body = document.createElement('div'); body.textContent = m.body;
+    const time = document.createElement('small'); time.style.opacity = '.7'; time.textContent = m.created_at;
+    wrap.append(body,time); log.appendChild(wrap); scrollDown();
+  }
+  socket.on('connect', () => { status.textContent = 'Live connection active'; socket.emit('join_chat', {username}); });
+  socket.on('disconnect', () => { status.textContent = 'Connection lost. Reconnecting…'; });
+  socket.on('joined_chat', () => { status.textContent = 'You are chatting live'; });
+  socket.on('new_message', addMessage);
+  socket.on('chat_error', (data) => { error.textContent = data.message || 'Message could not be sent.'; });
+  form.addEventListener('submit', (e) => {
+    e.preventDefault(); error.textContent = '';
+    const body = input.value.trim(); if (!body) return;
+    socket.emit('send_message', {username, body}); input.value = ''; input.focus();
+  });
+  scrollDown();
+})();
+</script>
+{% endblock %}

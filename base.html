@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1020">
+  <title>{% block title %}UMANG SOCIAL{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="{{ url_for('index') }}"><span class="brand-mark">U</span><span>UMANG <b>SOCIAL</b></span></a>
+  {% if current_user.is_authenticated %}
+  <nav class="nav">
+    <a href="{{ url_for('index') }}">Home</a>
+    <a href="{{ url_for('explore') }}">Explore</a>
+    <a href="{{ url_for('messages') }}">Messages</a>
+    <a href="{{ url_for('notifications') }}">Activity{% if unread_notifications %}<i class="dot"></i>{% endif %}</a>
+    <a href="{{ url_for('profile', username=current_user.username) }}">Profile</a>
+  </nav>
+  <div class="nav-user"><span class="small-avatar">{{ current_user.username[0]|upper }}</span><span class="nav-username">@{{ current_user.username }}</span>
+    <form method="post" action="{{ url_for('logout') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="text-button">Log out</button></form>
+  </div>
+  {% else %}
+  <div class="nav-actions"><a class="nav-login" href="{{ url_for('login') }}">Log in</a><a class="btn btn-small" href="{{ url_for('register') }}">Join free</a></div>
+  {% endif %}
+</header>
+<main class="page">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}<div class="flash-wrap">{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+<footer class="footer">© 2026 UMANG SOCIAL <span>Connect with kindness.</span></footer>
+</body>
+</html>

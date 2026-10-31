@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}Explore — UMANG SOCIAL{% endblock %}
+{% block content %}
+<div class="narrow-page"><div class="section-heading"><div><div class="eyebrow">DISCOVER YOUR COMMUNITY</div><h1>Explore people</h1></div></div>
+<form class="search-bar"><input name="q" value="{{ q }}" placeholder="Search usernames…"><button class="btn btn-small">Search</button></form>
+<div class="people-grid">{% for user in users %}<div class="person-card card"><div class="person-avatar">{{ user.username[0]|upper }}</div><a href="{{ url_for('profile', username=user.username) }}">@{{ user.username }}</a><small>{{ user.bio or 'New to the community' }}</small><div class="person-foot"><span>{{ user.follower_count }} followers</span><form method="post" action="{{ url_for('follow', user_id=user.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="mini-follow">{{ 'Following' if user.id in following_ids else 'Follow +' }}</button></form></div></div>{% else %}<div class="empty card">No users found. Try another username.</div>{% endfor %}</div></div>
+{% endblock %}

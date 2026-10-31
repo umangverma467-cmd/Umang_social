@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block title %}Activity — UMANG SOCIAL{% endblock %}
+{% block content %}
+<div class="narrow-page"><div class="eyebrow">WHAT'S NEW</div><h1>Activity</h1><div class="notification-list card">{% for n in items %}<div class="notification"><div class="avatar">{{ n.actor.username[0]|upper }}</div><p><a href="{{ url_for('profile', username=n.actor.username) }}">@{{ n.actor.username }}</a> {{ 'liked your post' if n.kind == 'liked' else 'commented on your post' if n.kind == 'commented' else 'started following you' }}.</p><small>{{ n.created_at.strftime('%d %b · %H:%M') }} UTC</small></div>{% else %}<div class="empty">No activity yet. Your updates will appear here.</div>{% endfor %}</div></div>
+{% endblock %}

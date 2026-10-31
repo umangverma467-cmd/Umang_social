@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Create account' if mode == 'register' else 'Log in' }} — UMANG SOCIAL{% endblock %}
+{% block content %}
+<div class="auth-shell"><div class="auth-side"><div class="eyebrow">WELCOME TO YOUR SPACE</div><h1>{{ 'Make room for' if mode == 'register' else 'Good to see' }}<br><span>{{ 'new connections.' if mode == 'register' else 'you again.' }}</span></h1><p>Share your world. Discover something new. Connect with kindness.</p><div class="auth-orbit">U</div></div>
+<div class="auth-card"><div class="eyebrow">{{ 'GET STARTED' if mode == 'register' else 'WELCOME BACK' }}</div><h2>{{ 'Create your account' if mode == 'register' else 'Log in to UMANG SOCIAL' }}</h2><p class="muted">{{ 'It takes less than a minute.' if mode == 'register' else 'Pick up where you left off.' }}</p>
+<form method="post" class="form">
+  {{ form.hidden_tag() }}
+  <label>{{ form.username.label }}{{ form.username(class_="input", placeholder="e.g. umang_verma", autocomplete="username") }}</label>{% for e in form.username.errors %}<small class="error">{{ e }}</small>{% endfor %}
+  <label>{{ form.password.label }}{{ form.password(class_="input", placeholder="At least 10 characters", autocomplete="new-password" if mode == 'register' else "current-password") }}</label>{% for e in form.password.errors %}<small class="error">{{ e }}</small>{% endfor %}
+  {% if mode == 'register' %}<label>{{ form.confirm.label }}{{ form.confirm(class_="input", placeholder="Enter password again", autocomplete="new-password") }}</label>{% for e in form.confirm.errors %}<small class="error">{{ e }}</small>{% endfor %}<p class="tiny-note">Choose a password you don't use on other websites. Use a username, not your full name or contact details.</p>{% endif %}
+  {{ form.submit(class_="btn btn-full") }}
+</form>
+<p class="switch-auth">{{ 'Already a member?' if mode == 'register' else 'New to UMANG SOCIAL?' }} <a href="{{ url_for('login' if mode == 'register' else 'register') }}">{{ 'Log in' if mode == 'register' else 'Create an account' }}</a></p>
+</div></div>
+{% endblock %}

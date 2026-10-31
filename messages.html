@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Messages — UMANG SOCIAL{% endblock %}
+{% block content %}
+<section class="auth-wrap" style="max-width:760px">
+  <div class="section-heading"><div><div class="eyebrow">PRIVATE CONVERSATIONS</div><h1>Messages</h1></div></div>
+  <form method="get" class="card" style="padding:18px;display:flex;gap:10px;align-items:center">
+    <input name="q" value="{{ q }}" maxlength="24" placeholder="Search username…" style="flex:1;min-width:0;padding:13px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:inherit">
+    <button class="btn btn-small" type="submit">Search</button>
+  </form>
+  <div class="card" style="padding:18px;margin-top:16px">
+    <h3>Find people</h3>
+    {% for person in users %}
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line)">
+        <a href="{{ url_for('profile', username=person.username) }}">@{{ person.username }}</a>
+        <a class="btn btn-small" href="{{ url_for('chat', username=person.username) }}">Message</a>
+      </div>
+    {% else %}<p class="muted">No accounts found. Try another username.</p>{% endfor %}
+  </div>
+  <div class="card" style="padding:18px;margin-top:16px">
+    <h3>Recent chats</h3>
+    {% for person in recent_users %}
+      <div style="padding:12px 0;border-bottom:1px solid var(--line)"><a href="{{ url_for('chat', username=person.username) }}">@{{ person.username }} →</a></div>
+    {% else %}<p class="muted">Your conversations will appear here.</p>{% endfor %}
+  </div>
+  <p class="muted" style="margin-top:14px">Only message people you know or trust. You can block an account from its profile.</p>
+</section>
+{% endblock %}

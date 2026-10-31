@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Home — UMANG SOCIAL{% endblock %}
+{% block content %}
+<div class="layout">
+  <aside class="left-rail">
+    <div class="rail-card profile-mini"><div class="mini-cover"></div><div class="mini-avatar">{{ current_user.username[0]|upper }}</div><b>@{{ current_user.username }}</b><small>{{ current_user.bio or 'Your space to express yourself.' }}</small><a href="{{ url_for('profile', username=current_user.username) }}">View profile →</a></div>
+    <div class="rail-links"><a class="active" href="{{ url_for('index') }}">⌂ <span>Home feed</span></a><a href="{{ url_for('explore') }}">⌕ <span>Explore people</span></a><a href="{{ url_for('notifications') }}">♧ <span>Activity</span></a></div>
+    <div class="rail-note">A little kindness makes a big difference. Be thoughtful with what you share.</div>
+  </aside>
+  <section class="feed-column">
+    <div class="section-heading"><div><div class="eyebrow">YOUR COMMUNITY</div><h1>Home feed</h1></div><a class="pill-link" href="{{ url_for('explore') }}">Find people ↗</a></div>
+    <form class="composer card" method="post" action="{{ url_for('create_post') }}" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="composer-top"><div class="avatar">{{ current_user.username[0]|upper }}</div><textarea name="body" maxlength="1000" placeholder="What would you like to share today?" rows="2"></textarea></div>
+      <div class="composer-bottom"><label class="upload-label">＋ Add photo <input type="file" name="image" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp"></label><button class="btn btn-small" type="submit">Share post →</button></div>
+    </form>
+    {% for post in posts %}
+    <article class="post card">
+      <div class="post-head"><a class="avatar" href="{{ url_for('profile', username=post.author.username) }}">{{ post.author.username[0]|upper }}</a><div class="post-author"><a href="{{ url_for('profile', username=post.author.username) }}">@{{ post.author.username }}</a><small>{{ post.created_at.strftime('%d %b %Y · %H:%M') }} UTC</small></div>
+      {% if post.author_id != current_user.id %}<form method="post" action="{{ url_for('report') }}" class="more-form"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="post_id" value="{{ post.id }}"><input type="hidden" name="reason" value="Potentially inappropriate content"><button class="icon-button" title="Report post">•••</button></form>{% endif %}</div>
+      {% if post.body %}<p class="post-body">{{ post.body }}</p>{% endif %}
+      {% if post.image %}<img class="post-image" src="{{ url_for('static', filename='uploads/' + post.image) }}" alt="Post image" loading="lazy">{% endif %}
+      <div class="post-actions"><form method="post" action="{{ url_for('like', post_id=post.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="action-button {{ 'liked' if post.id in liked_ids else '' }}">♥ <span>{{ post.likes|length }}</span></button></form><span class="action-button">◯ <span>{{ post.comments|length }} comments</span></span></div>
+      <div class="comments">{% for c in post.comments[:3] %}<p><a href="{{ url_for('profile', username=c.author.username) }}">@{{ c.author.username }}</a> {{ c.body }}</p>{% endfor %}
+      <form method="post" action="{{ url_for('comment', post_id=post.id) }}" class="comment-form"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input name="body" maxlength="400" placeholder="Add a kind comment…" required><button>Send</button></form></div>
+    </article>
+    {% else %}<div class="empty card"><div class="empty-icon">✦</div><h3>Your feed starts here</h3><p>Share your first post or explore to find people to follow.</p><a class="btn btn-small" href="{{ url_for('explore') }}">Explore people</a></div>{% endfor %}
+  </section>
+  <aside class="right-rail"><div class="side-card"><div class="eyebrow">A GOOD REMINDER</div><h3>Make the internet a kinder place.</h3><p>Think before you post, respect others and never share private information.</p></div><div class="side-card"><div class="eyebrow">QUICK LINKS</div><a href="{{ url_for('edit_profile') }}">Edit your profile ↗</a><a href="{{ url_for('explore') }}">Discover people ↗</a></div></aside>
+</div>
+{% endblock %}
